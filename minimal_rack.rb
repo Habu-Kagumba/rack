@@ -1,5 +1,6 @@
 require "rack"
 require "rack/handler/puma"
+require_relative "middleware_rack"
 
 class MinimalRack
   def call(env)
@@ -13,5 +14,10 @@ class MinimalRack
   end
 end
 
+app = Rack::Builder.new do
+  use MiddlewareRack
+  run MinimalRack.new
+end
+
 # Run on port 9292
-Rack::Handler::Puma.run(MinimalRack.new, Port: 9292)
+Rack::Handler::Puma.run(app, Port: 9292)
